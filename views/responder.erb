@@ -1,0 +1,19 @@
+<html>
+<body>
+<form name="respuestas" method="post" action="/responder">
+<input type="hidden" value="<%=mensajeid%>" name="mensajeid"/>
+<h4><%=mensaje%></h4>
+<select name="respuesta">
+<%
+respuestas.each do |respuesta| 
+%>
+<option value="<%=respuesta[0]%>"><%=respuesta[2]%></option>
+<%
+end
+%>
+</select><br />
+<textarea name="texto"></textarea>
+<input type="submit" value="Continuar" />
+</form>
+</body>
+</html>

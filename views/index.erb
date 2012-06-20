@@ -1,0 +1,28 @@
+<html>
+<body>
+<form action="/crear/<%=cid%>" name="pregunta" method="post">
+Mensaje: <input type="textbox" name="declaracion"/><br/>
+Tipo de respuestas: <select name="tipo"><option value="abcd">a, b, c o d</option><option value="FREE">Respuesta libre</option><option value="MS">Seleccion Multiple</option></select></br>
+Respuestas: <textarea name="respuestas"></textarea><br/>
+<input type="submit" value="Guardar declaracion" />
+<select name="origen">
+<option value=""></option>
+<%
+mensajes.each do |mensaje|
+%>
+<option value="m<%=mensaje[0]%>"><%=mensaje[2]%></option>
+<%
+respuestas.data_seek(0)
+respuestas.each do |respuesta|
+if respuesta[1] == mensaje[0]
+%>
+<option value="r<%=respuesta[0]%>">&nbsp;&nbsp;<%=respuesta[2]%></option>
+<%
+end
+end
+end
+%>
+</select>
+</form>
+</body>
+</html>
