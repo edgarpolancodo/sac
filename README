@@ -1,0 +1,6 @@
+Sistema Automatizador de Conversaciones
+
+Este sistema consiste en brindar la posibilidad de llevar a cabo conversaciones con actores que no estén sincronizados en el tiempo. Esto mediante declaraciones o  preguntas predeterminadas por parte del emisor, y respuestas o reacciones por parte del receptor.
+
+El emisor crearía un flujo de declaraciones con potenciales respuestas que el receptor daría. El receptor tiene la posibilidad de personalizar su respuesta.
+
