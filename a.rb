@@ -12,7 +12,7 @@ end
 get '/crear/:cid' do
 	my = Mysql::new("localhost", "root", "asdasd", "sac")
 	res = my.query("select * from Mensajes WHERE ConversacionID = '#{params[:cid]}'")
-	res2 = my.query("select * from Respuestas r, Mensajes m WHERE ConversacionID = '#{params[:cid]}' AND r.MensajeID = m.ID;")
+	res2 = my.query("select * from Respuestas r, Mensajes m WHERE ConversacionID = '#{params[:cid]}' AND r.MensajeID = m.ID AND m.Tipo_Declaracion <> 'FREE';")
 	link = request.url.sub("crear", "responder")	
 	erb :index, :locals => {:mensajes => res, :respuestas => res2, :cid => params[:cid], :link => link}
 	
@@ -30,7 +30,9 @@ post '/crear/:cid' do
 		respuestaID = params[:origen].split('r').last
 	end
 	my.query("insert into Mensajes(ConversacionID, Mensaje, Tipo_Declaracion, MensajeAnterior, BasadoRespuesta) VALUES "+
-	"('#{params[:cid]}', '#{params[:declaracion]}', '#{params[:tipo]}', '#{mensajeID}', '#{respuestaID}'); update Mensajes set MensajeAnterior = NULL, BasadoRespuesta = NULL Where MensajeAnterior=0 AND BasadoRespuesta=0;")
+	"('#{params[:cid]}', '#{params[:declaracion]}', '#{params[:tipo]}', '#{mensajeID}', '#{respuestaID}');")
+
+	my.query("update Mensajes set MensajeAnterior = NULL, BasadoRespuesta = NULL Where MensajeAnterior=0 AND BasadoRespuesta=0;")
 	res = my.query("select ID from Mensajes WHERE Mensaje = '#{params[:declaracion]}' AND Tipo_Declaracion = '#{params[:tipo]}' AND ConversacionID = '#{params[:cid]}'")
 	if params[:tipo] == "FREE"
 		res.each do |row|
@@ -54,7 +56,7 @@ end
 
 get '/responder/:cid' do
 	my = Mysql::new("localhost", "root", "asdasd", "sac")
-	men = my.query("select * from Mensajes where ConversacionID = '#{params[:cid]}' LIMIT 1;")
+	men = my.query("select * from Mensajes where ConversacionID = '#{params[:cid]}' ORDER BY ID ASC LIMIT 1;")
 	mensajeid = ""
 	mensaje = ""	
 	men.each do |m|
@@ -82,12 +84,12 @@ post '/responder' do
 		mensajeid = m[0]	
 	end
 	res = my.query("select * from Respuestas where MensajeID = '#{mensajeid}';")
-	erb :responder, :locals => {:mensaje => mensaje, :mensajeid => mensajeid, :respuestas => res}
+	erb :responder2, :locals => {:mensaje => mensaje, :mensajeid => mensajeid, :respuestas => res}
 
 end
 
 get '/leer/:cid' do
 	my = Mysql::new("localhost", "root", "asdasd", "sac")
-	con = my.query("select * from Mensajes m, Respuestas r, RespuestasHistorial rh where m.ConversacionID = '#{params[:cid]}' and r.MensajeID = m.ID and rh.RespuestaID = r.ID;")
+	con = my.query("select * from Mensajes m, Respuestas r, RespuestasHistorial rh where m.ConversacionID = '#{params[:cid]}' and r.MensajeID = m.ID and rh.RespuestaID = r.ID ORDER BY m.ID ASC;")
 	erb :conversacion, :locals => {:conversacion => con}	
 end

@@ -1,0 +1,9 @@
+<input type="hidden" value="<%=mensaje%>" name="mensaje"/>
+<input type="hidden" value="<%=mensajeid%>" name="mensajeid"/>
+<%
+respuestas.each do |respuesta| 
+%>
+<button type="button" value="<%=respuesta[0]%>" onclick="seleccionarRespuesta(this)"><%=respuesta[2]%></button>
+<%
+end
+%>
