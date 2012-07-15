@@ -47,7 +47,7 @@ post '/crear/:cid' do
 	
 	elsif
 		res.each do |row|
-			params[:respuestas].each do |respuesta|
+			params[:respuestas].split("\n").each do |respuesta|
 			my.query("insert into Respuestas(MensajeID, Texto) VALUES "+
 			"('#{row[0]}', '#{respuesta}')")
 			end	
@@ -81,17 +81,17 @@ post '/responder' do
 	respuestaid = params[:respuesta]
 	texto = params[:texto]
 	tipo = params[:tipo]
-	fila = 0
-	respuestaid.each do |r|
-		if tipo == "MS"
+	if tipo == "abcd" || tipo=="FREE"
+		my.query("insert into RespuestasHistorial(RespuestaID, Texto) VALUES ('#{respuestaid}', '#{texto}')")	
+	elsif tipo == "MS" 
+		fila = 0
+		respuestaid.each do |r|
 			my.query("insert into RespuestasHistorial(RespuestaID, Texto) VALUES ('#{r}', '#{texto[fila]}')")
 			fila+=1
-		else
-			my.query("insert into RespuestasHistorial(RespuestaID, Texto) VALUES ('#{r}', '#{texto}')")
 		end
 	end
 	if tipo != "MS"
-	men = my.query("select * from Mensajes where BasadoRespuesta = '#{respuestaid}';")
+		men = my.query("select * from Mensajes where BasadoRespuesta = '#{respuestaid}';")
 		if men.num_rows() == 0
 			men = my.query("select * from Mensajes where MensajeAnterior = '#{params[:mensajeid]}';")
 		end
